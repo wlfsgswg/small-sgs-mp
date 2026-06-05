@@ -6,7 +6,6 @@
       <el-row>
         <el-col :span="8">
           <div class="search-item">
-            <div class="label">搜索次数：</div>
             <div class="component">
               <el-select v-model="search.time" placeholder="请选择状态" size="small" :style="{ width: '100%' }" clearable>
                 <el-option label="10次" :value="10" :key="10"></el-option>
@@ -16,15 +15,16 @@
                 <el-option label="1000次" :value="1000" :key="1000"></el-option>
               </el-select>
             </div>
+            <div class="label"></div>
           </div>
         </el-col>
         <el-col :span="8">
           <div class="search-item">
-            <div class="label">搜索内容：</div>
             <div class="component">
               <el-input v-model="search.keyword" size="small" placeholder="请输入内容" :style="{ width: '100%' }"
                 clearable></el-input>
             </div>
+             <div class="label"></div>
           </div>
         </el-col>
         <el-col :span="8">
@@ -50,14 +50,17 @@
     <!-- 内容展示 -->
     <div class="list">
       <div class="list-item" v-for="item in list" :key="item.id">
-        <div class="list-item-top"><img :src="item.user.avatar" alt="" class="img">
+        <div class="list-item-top">
+          <img :src="item.user.avatar" alt="" class="img">
           <div class="name"> {{ item.user.nick_name }} </div>
           <div class="lv">Lv.{{ item.user.grade }}</div>
+        </div>
+        <!-- <div class="list-item-time">
           <span class="time">
             <span class="m-r-10">ID：{{ item.id }}</span>
-            <span>创建时间：{{ item.created_at }}</span>
+            <span>发表时间：{{ item.created_at }}</span>
           </span>
-        </div>
+        </div> -->
         <div class="list-item-content">
           <div class="title">{{ item.title }}</div>
           <div class="text">{{ item.body }}</div>
