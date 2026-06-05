@@ -23,21 +23,17 @@ const requestAddressList = [
         url: '/api/mp/global',
         type: 'post',
     },
+    // get接口
     {
-        describe: '获取微信小知识答题列表',
-        method: 'getssxzsData',
-        url: '/api/ssxzs/data',
-        type: 'post',
+        describe: '获取三国杀热榜内容',
+        method: 'getSgslist',
+        url: '/api/topics',
+        type: 'get',
     }, {
-        describe: '提交微信小知识答题',
-        method: 'addssxzsData',
-        url: '/api/ssxzs/addData',
-        type: 'post',
-    }, {
-        describe: '微信小知识答题修改状态',
-        method: 'editssxzsDataStatus',
-        url: '/api/ssxzs/editStatus',
-        type: 'post',
+        describe: '搜索三国杀热榜内容',
+        method: 'searchSgslist',
+        url: '/api/searchV2/topics',
+        type: 'get',
     },
 ]
 
@@ -45,15 +41,7 @@ const API = {}
 
 requestAddressList.forEach(item => {
     if (API[item.method]) console.log(`存在相同方法：${item.method}`)
-
-    // requestOptions => { requestHeaders: {}, loading: {}, ... }
     API[item.method] = (requestParams, requestOptions) => http[item.type](item.url, requestParams, requestOptions)
 })
-
-// mock例子
-// API.getDemo = Promise.resolve({
-//   errCode: 0,
-//   data: {},
-// })
 
 export default API

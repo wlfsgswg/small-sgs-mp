@@ -60,11 +60,11 @@ class HttpRequest {
                         Message.error(result.message || '请求出错')
                         reject(result)
                     } else {
-                        if (result.status !== 200) {
+                        if (result.status === 200 || result.code === 0) {
+                             resolve(result)
+                        } else {
                             Message.error(result.message || '请求出错')
                             reject(result)
-                        } else {
-                            resolve(result)
                         }
                     }
                 })
@@ -112,7 +112,7 @@ class HttpRequest {
     // 响应数据处理
     transformResponse(response) {
         let result = response.data
-            // 处理文件流响应
+        // 处理文件流响应
         if (Object.prototype.toString.call(result) === '[object ArrayBuffer]') {
             result = {
                 data: result,
@@ -132,7 +132,7 @@ class HttpRequest {
 
 // 请求头添加鉴权数据等额外的配置
 export function getHeaders(requestHeaders) {
-    const header = {...requestHeaders }
+    const header = { ...requestHeaders }
     return {
         ...header,
     }
