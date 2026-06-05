@@ -1,6 +1,6 @@
 <template>
-  <div class="xcx-ssxzs-ssxzscontrol">
-    <Title title="杀友小知识问题列表"></Title>
+  <div class="xcx-sgs-sgshot">
+    <Title title="三国杀热榜"></Title>
     <!-- 条件搜索 -->
     <div class="search">
       <el-row>
@@ -95,11 +95,6 @@
         </el-row>
       </div>
     </div>
-    <div class="p-b-10">
-      <el-button type="primary" size="small" @click="handleAdd">
-        新增问题</el-button
-      >
-    </div>
     <xcx-table
       :columns="ssxzsControlColumns"
       :dataSource="list"
@@ -188,189 +183,6 @@
       >
       </el-pagination>
     </div>
-    <Dialog
-      :visible="visible"
-      width="720px"
-      :title="dialogTitle || '新增问题'"
-      @onCancel="onCancel"
-      @onOk="submitForm('dynamicValidateForm')"
-      :okButtonLoading="okloading"
-    >
-      <template #content>
-        <div class="dialog-content">
-          <div class="dialog-content-form">
-            <el-form
-              :model="dynamicValidateForm"
-              ref="dynamicValidateForm"
-              label-width="66px"
-              class="demo-dynamic"
-            >
-              <el-form-item
-                prop="desc"
-                label="描述"
-                :rules="[
-                  {
-                    required: true,
-                    message: '描述内容不能为空！',
-                    trigger: 'blur',
-                  },
-                ]"
-              >
-                <el-input
-                  size="small"
-                  type="textarea"
-                  :autosize="{ minRows: 3, maxRows: 3 }"
-                  v-model="dynamicValidateForm.desc"
-                  placeholder="请输入描述内容，最多200字"
-                  :maxlength="200"
-                ></el-input>
-              </el-form-item>
-              <el-form-item
-                prop="grade"
-                label="等级"
-                :rules="[
-                  {
-                    required: true,
-                    message: '等级必须选择！',
-                    trigger: 'blur',
-                  },
-                ]"
-              >
-                <el-radio-group v-model="dynamicValidateForm.grade">
-                  <el-radio :label="1">白银</el-radio>
-                  <el-radio :label="2">黄金</el-radio>
-                  <el-radio :label="3">翡翠</el-radio>
-                  <el-radio :label="4">大师</el-radio>
-                  <el-radio :label="5">传说</el-radio>
-                </el-radio-group>
-              </el-form-item>
-
-              <el-form-item
-                prop="a"
-                label="选项A"
-                :rules="[
-                  {
-                    required: true,
-                    message: '选项A内容不能为空！',
-                    trigger: 'blur',
-                  },
-                ]"
-              >
-                <el-input
-                  size="small"
-                  v-model="dynamicValidateForm.a"
-                  placeholder="请输入选项A内容，最多45字"
-                  :maxlength="45"
-                ></el-input>
-              </el-form-item>
-              <el-form-item
-                prop="b"
-                label="选项B"
-                :rules="[
-                  {
-                    required: true,
-                    message: '选项B内容不能为空！',
-                    trigger: 'blur',
-                  },
-                ]"
-              >
-                <el-input
-                  size="small"
-                  v-model="dynamicValidateForm.b"
-                  placeholder="请输入选项B内容，最多45字"
-                  :maxlength="45"
-                ></el-input>
-              </el-form-item>
-              <el-form-item
-                prop="c"
-                label="选项C"
-                :rules="[
-                  {
-                    required: true,
-                    message: '选项C内容不能为空！',
-                    trigger: 'blur',
-                  },
-                ]"
-              >
-                <el-input
-                  size="small"
-                  v-model="dynamicValidateForm.c"
-                  placeholder="请输入选项C内容，最多45字"
-                  :maxlength="45"
-                ></el-input>
-              </el-form-item>
-              <el-form-item
-                prop="d"
-                label="选项D"
-                :rules="[
-                  {
-                    required: true,
-                    message: '选项D内容不能为空！',
-                    trigger: 'blur',
-                  },
-                ]"
-              >
-                <el-input
-                  size="small"
-                  v-model="dynamicValidateForm.d"
-                  placeholder="请输入选项D内容，最多45字"
-                  :maxlength="45"
-                ></el-input>
-              </el-form-item>
-
-              <el-form-item
-                prop="answer"
-                label="答案"
-                :rules="[
-                  {
-                    required: true,
-                    message: '答案内容不能为空！',
-                    trigger: 'blur',
-                  },
-                ]"
-              >
-                <!-- <el-input size="small" v-model="dynamicValidateForm.answer" placeholder="请输入答案"
-                  :maxlength="10"></el-input> -->
-                <el-select
-                  size="small"
-                  v-model="dynamicValidateForm.answer"
-                  :style="{ width: '100%' }"
-                  placeholder="请选择问题答案"
-                >
-                  <el-option
-                    v-for="item in selectList"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  >
-                  </el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item
-                prop="detail"
-                label="解析"
-                :rules="[
-                  {
-                    required: true,
-                    message: '解析内容不能为空！',
-                    trigger: 'blur',
-                  },
-                ]"
-              >
-                <el-input
-                  size="small"
-                  type="textarea"
-                  :autosize="{ minRows: 3 }"
-                  v-model="dynamicValidateForm.detail"
-                  placeholder="请输入解析内容，最多1000字"
-                  :maxlength="1000"
-                ></el-input>
-              </el-form-item>
-            </el-form>
-          </div>
-        </div>
-      </template>
-    </Dialog>
     <Dialog
       :visible="openVisible"
       width="720px"
@@ -542,14 +354,6 @@ export default {
         .catch(() => {
           this.okloading = false;
         });
-    },
-    // 新增
-    handleAdd() {
-      this.dialogTitle = "新增问题";
-      // 加上延时器，解决弹框一闪一闪的问题
-      setTimeout(() => {
-        this.visible = true;
-      }, 200);
     },
     // 修改
     handleEdit(row) {

@@ -1,17 +1,17 @@
 const routes = [
     {
         path: "/",
-        redirect: '/questioncontrol',
+        redirect: '/hot',
         component: () =>
             import("@/containers/Menu/index.vue"),
         children: [
-            // ssxzs
+            // sgs
             {
-                path: "/questioncontrol",
+                path: "/hot",
                 component: () =>
-                    import("@/containers/Menu/Ssxzs/QuestionControl/index.vue"),
+                    import("@/containers/Menu/Sgs/Hot/index.vue"),
             },
-            
+
         ]
     },
     {

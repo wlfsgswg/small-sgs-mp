@@ -1,5 +1,5 @@
 module.exports = {
-  outputDir: 'mpssxzs-dist', // 自定义的dist文件夹名
+  outputDir: 'sgs-dist', // 自定义的dist文件夹名
   publicPath: '/mp_sgs/',
   filenameHashing: true, // 启用文件名哈希
   indexPath: 'index.html',
