@@ -2,9 +2,9 @@
   <div class="xcx-sgs-sgshot">
     <Title title="三国杀热榜"></Title>
     <!-- 条件搜索 -->
-    <div class="search p-t-20 p-b-20">
+    <div class="search p-t-10 p-b-10">
       <el-row>
-        <el-col :span="8">
+        <el-col :span="7">
           <div class="search-item">
             <div class="component">
               <el-select v-model="search.time" placeholder="请选择状态" size="small" :style="{ width: '100%' }" clearable>
@@ -18,7 +18,7 @@
             <div class="label"></div>
           </div>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="7">
           <div class="search-item">
             <div class="component">
               <el-input v-model="search.keyword" size="small" placeholder="请输入内容" :style="{ width: '100%' }"
@@ -27,7 +27,7 @@
             <div class="label"></div>
           </div>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="10">
           <div class="search-btn clearfix">
             <div class="r-right">
               <el-button type="primary" size="small" @click="handleSearch">
@@ -42,7 +42,7 @@
       </el-row>
     </div>
     <!-- 总体数据 -->
-    <div class="p-b-20 t-a-r total-data">
+    <div class="p-b-10 t-a-r total-data">
       <span class="m-r-10">总计：{{ total }} 条</span>
       <span class="m-r-10">选中：{{ list.length }} 条</span>
       <span>筛掉：{{ remove }}条</span>
