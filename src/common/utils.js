@@ -22,7 +22,22 @@ function throttle(fn, delay) {
     }
 }
 
+// 判读是不是在手机上浏览
+
+function isMobileDevice() {
+    var isMobile = /iPhone|iPad|iPod|Android|BlackBerry|BB10|Silk|Mobi|Mini|Opera Mini/i.test(navigator.userAgent);
+    return isMobile;
+}
+
+if (isMobileDevice()) {
+    console.log("This is a mobile device.");
+} else {
+    console.log("This is not a mobile device.");
+}
+
+
 module.exports = {
     guid,
-    throttle
+    throttle,
+    isMobileDevice
 };

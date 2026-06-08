@@ -24,7 +24,7 @@
               <el-input v-model="search.keyword" size="small" placeholder="请输入内容" :style="{ width: '100%' }"
                 clearable></el-input>
             </div>
-             <div class="label"></div>
+            <div class="label"></div>
           </div>
         </el-col>
         <el-col :span="8">
@@ -42,10 +42,10 @@
       </el-row>
     </div>
     <!-- 总体数据 -->
-    <div class="p-b-20 t-a-r">
-      <span class="m-r-10">总计：{{ total }} 条数据</span>
-      <span class="m-r-10">选中：{{ list.length }} 条数据</span>
-      <span>筛掉：{{ remove }}条数据</span>
+    <div class="p-b-20 t-a-r total-data">
+      <span class="m-r-10">总计：{{ total }} 条</span>
+      <span class="m-r-10">选中：{{ list.length }} 条</span>
+      <span>筛掉：{{ remove }}条</span>
     </div>
     <!-- 内容展示 -->
     <div class="list">
@@ -55,12 +55,12 @@
           <div class="name"> {{ item.user.nick_name }} </div>
           <div class="lv">Lv.{{ item.user.grade }}</div>
         </div>
-        <!-- <div class="list-item-time">
+        <div class="list-item-time">
           <span class="time">
             <span class="m-r-10">ID：{{ item.id }}</span>
             <span>发表时间：{{ item.created_at }}</span>
           </span>
-        </div> -->
+        </div>
         <div class="list-item-content">
           <div class="title">{{ item.title }}</div>
           <div class="text">{{ item.body }}</div>
@@ -70,7 +70,6 @@
             </div>
           </div>
           <div class="bottom">
-            <div class="tag"></div>
             <div class="view">
               <img
                 src="data:image/png;base64,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"
@@ -154,12 +153,14 @@ export default {
     },
     // 查询
     handleSearch(e) {
+      //
       if (e === "clear") {
         this.search = { keyword: "", time: "" };
       }
       this.page = 1;
       this.list = [];
       this.total = 0;
+      this.remove = 0;
       this.handleGetHotlist();
     },
   },
