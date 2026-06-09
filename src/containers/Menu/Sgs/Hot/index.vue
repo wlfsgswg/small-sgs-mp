@@ -61,16 +61,16 @@
                 <div class="lv">Lv.{{ item.user.grade }}</div>
               </div>
               <div class="op">
-                <span v-if="item.focus === '0'" class="m-r-10 span" @click="handleOp('0', item.user)">关注</span>
+                <span v-if="item.focus === '0'" class="m-r-10 span" @click="handleOp('0', item)">关注</span>
                 <span v-if="item.focus === '1'" class="m-r-10 span-not">已关注</span>
-                <span v-if="item.black === '0'" class="span" @click="handleOp('1', item.user)">拉黑</span>
+                <span v-if="item.black === '0'" class="span" @click="handleOp('1', item)">拉黑</span>
                 <span v-if="item.black === '1'" class="m-r-10 span-not">已拉黑</span>
               </div>
 
             </div>
             <div class="list-item-time">
               <span class="time">
-                <span class="m-r-10">ID：{{ item.id }}</span>
+                <span class="m-r-10">ID：{{ item.user.id }}</span>
                 <span>发表时间：{{ item.created_at }}</span>
               </span>
             </div>
@@ -153,11 +153,11 @@ export default {
           const orginData = res?.data || []
           this.total += orginData.length
           // 处理，留下阅读高的数据
-          const readNumMaxData = orginData.filter(it => (Number(it.view_count - 0) === 0))
+          const readNumMaxData = orginData.filter(it => (Number(it.view_count - 0) > 0))
           // 同时添加状态
           this.list = [...this.list, ...readNumMaxData].map(it => {
             const currentItem = this.accountList.filter(item => item.id === (it.user && it.user.id))
-
+            console.log(currentItem, 'currentItem')
             if (currentItem.length) {
               it.black = currentItem[0].isblacklist === '1' ? '1' : '0'
               it.focus = currentItem[0].isblacklist === '1' ? '0' : '1'
@@ -190,7 +190,8 @@ export default {
         })
     },
     // 改变账号状态
-    handleOp(e, user) {
+    handleOp(e, item) {
+      const { user } = item
       this.$API.addAccount({
         isblacklist: e,
         id: user.id,
@@ -200,12 +201,18 @@ export default {
         official: user.official,
       })
         .then((res) => {
-          console.log(res)
+          if (res.status === 200) {
+            item.black = e;
+            item.focus = e === '1' ? '0' : '1'
+            this.$message({
+              message: e === '1' ? "已拉黑" : "已关注",
+              type: "success",
+            });
+          }
         })
     },
     // 查询
     handleSearch(e) {
-      //
       if (e === "clear") {
         this.search = { keyword: "", time: "" };
       }
