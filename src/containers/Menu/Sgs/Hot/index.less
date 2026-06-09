@@ -18,7 +18,7 @@
         }
     }
 
-    .total-data{
+    .total-data {
         font-size: 14px;
     }
 
@@ -28,7 +28,6 @@
             background-color: #fff;
             border-radius: 10px;
             box-sizing: border-box;
-            cursor: pointer;
             list-style-type: none;
             padding: 18px 14px;
             width: 100%;
@@ -39,32 +38,61 @@
                 display: flex;
                 font-size: 15px;
 
-                .img {
-                    border-radius: 100%;
-                    flex-shrink: 0;
-                    height: 32px;
-                    margin-right: 16px;
-                    overflow: hidden;
-                    width: 32px;
+                .top-img {
+                    width: 64px;
+                    padding-right: 10px;
+
+                    .img {
+                        border-radius: 100%;
+                        flex-shrink: 0;
+                        height: 64px;
+                        overflow: hidden;
+                        width: 64px;
+                    }
                 }
 
-                .lv {
-                    align-items: center;
-                    background-color: #669aff;
-                    border-radius: 4px;
-                    color: #fff;
-                    display: flex;
-                    flex-shrink: 0;
-                    font-size: 12px;
-                    justify-content: center;
-                    margin-left: 12px;
-                    padding: 2px 4px;
-                }
+                .top-flex {
+                    flex: 1;
 
+                    .name-lv-op {
+                        display: flex;
+                        justify-content: space-between;
+                        font-size: 15px;
+
+                        .name-lv {
+                            display: flex;
+                            justify-content: space-between;
+                        }
+
+                        .op {
+                            .span {
+                                cursor: pointer;
+                                color: #ff7a25;
+                            }
+
+                            .span-not {
+                                color: #999;
+                            }
+                        }
+                    }
+
+                    .lv {
+                        align-items: center;
+                        background-color: #669aff;
+                        border-radius: 4px;
+                        color: #fff;
+                        display: flex;
+                        flex-shrink: 0;
+                        font-size: 12px;
+                        justify-content: center;
+                        margin-left: 12px;
+                        padding: 2px 4px;
+                    }
+                }
             }
 
             &-time {
-                text-align: right;
+                padding-top: 5px;
 
                 .time {
                     color: #909aa4;
@@ -77,6 +105,7 @@
                 color: #909aa4;
                 font-size: 15px;
                 margin-top: 16px;
+                cursor: pointer;
 
                 .title {
                     overflow: hidden;

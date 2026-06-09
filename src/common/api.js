@@ -34,6 +34,16 @@ const requestAddressList = [
         method: 'searchSgslist',
         url: '/api/searchV2/topics',
         type: 'get',
+    },{
+        describe: '搜索三国杀咸话账号',
+        method: 'getXhAccount',
+        url: '/api/xh/getXhAccount',
+        type: 'post',
+    },{
+        describe: '新增修改三国杀咸话账号',
+        method: 'addAccount',
+        url: '/api/xh/addAccount',
+        type: 'post',
     },
 ]
 

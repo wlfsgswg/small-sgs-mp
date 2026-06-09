@@ -51,15 +51,30 @@
     <div class="list">
       <div class="list-item" v-for="item in list" :key="item.id">
         <div class="list-item-top">
-          <img :src="item.user.avatar" alt="" class="img">
-          <div class="name"> {{ item.user.nick_name }} </div>
-          <div class="lv">Lv.{{ item.user.grade }}</div>
-        </div>
-        <div class="list-item-time">
-          <span class="time">
-            <span class="m-r-10">ID：{{ item.id }}</span>
-            <span>发表时间：{{ item.created_at }}</span>
-          </span>
+          <div class="top-img">
+            <img :src="item.user.avatar" alt="" class="img">
+          </div>
+          <div class="top-flex">
+            <div class="name-lv-op">
+              <div class="name-lv">
+                <div class="name"> {{ item.user.nick_name }} </div>
+                <div class="lv">Lv.{{ item.user.grade }}</div>
+              </div>
+              <div class="op">
+                <span v-if="item.focus === '0'" class="m-r-10 span" @click="handleOp('0', item.user)">关注</span>
+                <span v-if="item.focus === '1'" class="m-r-10 span-not">已关注</span>
+                <span v-if="item.black === '0'" class="span" @click="handleOp('1', item.user)">拉黑</span>
+                <span v-if="item.black === '1'" class="m-r-10 span-not">已拉黑</span>
+              </div>
+
+            </div>
+            <div class="list-item-time">
+              <span class="time">
+                <span class="m-r-10">ID：{{ item.id }}</span>
+                <span>发表时间：{{ item.created_at }}</span>
+              </span>
+            </div>
+          </div>
         </div>
         <div class="list-item-content">
           <div class="title">{{ item.title }}</div>
@@ -107,15 +122,17 @@ export default {
       time: "",
     },
     // 分页
-    page: 1
+    page: 1,
+    accountList: []
   }),
   components: {
     Title,
   },
   mounted() {
-    this.handleGetHotlist();
+    this.handleGetAccountlist();
   },
   methods: {
+    // 获取热门文章
     handleGetHotlist() {
       const { keyword, time } = this.search;
       this.loading = true;
@@ -136,8 +153,21 @@ export default {
           const orginData = res?.data || []
           this.total += orginData.length
           // 处理，留下阅读高的数据
-          const readNumMaxData = orginData.filter(it => (Number(it.view_count - 0) > 6666))
-          this.list = [...this.list, ...readNumMaxData]
+          const readNumMaxData = orginData.filter(it => (Number(it.view_count - 0) === 0))
+          // 同时添加状态
+          this.list = [...this.list, ...readNumMaxData].map(it => {
+            const currentItem = this.accountList.filter(item => item.id === (it.user && it.user.id))
+
+            if (currentItem.length) {
+              it.black = currentItem[0].isblacklist === '1' ? '1' : '0'
+              it.focus = currentItem[0].isblacklist === '1' ? '0' : '1'
+
+            } else {
+              it.black = "0"
+              it.focus = "0"
+            }
+            return it
+          })
           this.remove = this.total - this.list.length
           if (this.page < time) {
             this.page++
@@ -145,11 +175,33 @@ export default {
           } else {
             this.loading = false;
           }
-
         })
         .catch(() => {
           this.loading = false;
         });
+    },
+    // 获取账号list
+    handleGetAccountlist() {
+      this.$API.getXhAccount()
+        .then((res) => {
+          this.accountList = res.data || [];
+          // 请求文章
+          this.handleGetHotlist()
+        })
+    },
+    // 改变账号状态
+    handleOp(e, user) {
+      this.$API.addAccount({
+        isblacklist: e,
+        id: user.id,
+        name: user.nick_name,
+        avatar: user.avatar,
+        province: user.province,
+        official: user.official,
+      })
+        .then((res) => {
+          console.log(res)
+        })
     },
     // 查询
     handleSearch(e) {
