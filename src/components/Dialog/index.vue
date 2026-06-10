@@ -2,12 +2,12 @@
   <div :class="`xcx-components-dialog`">
     <el-dialog :key="title" :title="null" :visible="visible" :show-close="false" :width="width" :before-close="onCancel"
       custom-class="components-dialog">
-      <div class="components-dialog-top">
+      <!-- <div class="components-dialog-top">
         <div class="title">{{ title }}</div>
         <div class="svg-close_big" @click="onCancel">
           <i class="el-icon-close"></i>
         </div>
-      </div>
+      </div> -->
       <div class="components-dialog-content" v-if="!slotObject.content">默认内容瑟瑟发抖</div>
       <div v-if="slotObject.content">
         <slot name="content"></slot>

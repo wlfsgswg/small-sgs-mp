@@ -44,6 +44,11 @@ const requestAddressList = [
         method: 'addAccount',
         url: '/api/xh/addAccount',
         type: 'post',
+    },{
+        describe: '获取微信公众号账号列表',
+        method: 'getWxAccount',
+        url: '/api/wx/getWxAccount',
+        type: 'post',
     },
 ]
 

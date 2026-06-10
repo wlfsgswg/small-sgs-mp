@@ -57,7 +57,7 @@
           <div class="top-flex">
             <div class="name-lv-op">
               <div class="name-lv">
-                <div class="name"> {{ item.user.nick_name }} </div>
+                <div class="name"> {{ item.user && item.user.nick_name }} </div>
                 <div class="lv">Lv.{{ item.user.grade }}</div>
               </div>
               <div class="op">
@@ -76,7 +76,7 @@
             </div>
           </div>
         </div>
-        <div class="list-item-content">
+        <div class="list-item-content" @click="handleOpen(item)">
           <div class="title">{{ item.title }}</div>
           <div class="text">{{ item.body }}</div>
           <div class="preview-imgs">
@@ -102,12 +102,87 @@
         </div>
       </div>
     </div>
+    <!--  -->
+    <Dialog :visible="visible" title="文章详情" width="90vw" @onCancel="visible = false"
+      :slotObject="{ top: false, content: true, footer: true }">
+      <template #content>
+        <div class="dialog-content">
+          <div class="dialog-content-form">
+            <el-descriptions border>
+              <template slot="title">
+                <div class="wx-account">
+                  <div class="title">
+                    {{ opendata.title }}
+                  </div>
+                  <div class=" base-data">
+                    <div class="account-time">
+                      <div class="account m-r-20">
+                        {{ opendata.user && opendata.user.nick_name }}
+                      </div>
+                      <div class="time">{{ opendata.time }}</div>
+                    </div>
+                    <div class="icons">
+                      <div class="icon">
+                        阅读：<span class="icon-num">{{ opendata.view_count }}</span>
+                      </div>
+                      <div class="icon">
+                        评论：<span class="icon-num">{{ opendata.reply_count }}</span>
+                      </div>
+                      <div class="icon">
+                        点赞：<span class="icon-num">{{ opendata.like_count }}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="clearfix wx-account-op">
+                    <div class="m-r-20">
+                      <el-button type="text" class="right-btn-32" @click="handleCopy(opendata.title)">复制标题</el-button>
+                    </div>
+                    <div class="m-r-20">
+                      <el-button type="text" class="right-btn-32" @click="handleCopy(opendata.body)">复制内容</el-button>
+                    </div>
+                    <div class="select">
+                      <el-select multiple size="small" prefix="洗稿账号" v-model="copyids" :style="{ width: '100%' }"
+                        placeholder="请选择洗稿账号">
+                        <el-option
+                          v-for="item in mpwxaccountList.filter(it => it.isself !== '0' && it.iscancel !== '1')"
+                          :value="item.id" :label="item.name" :key="item.id">
+                          <span> {{ item.name }}</span>
+                          <span class=" p-l-5">
+                            <span v-if="item.isself === '1'">
+                              <el-tag size="mini">自</el-tag>
+                            </span>
+                            <span v-else>
+                              <el-tag type="info" size="mini">网</el-tag>
+                            </span>
+                          </span>
+                          <span v-if="item.iscancel === '1'" class="p-l-5">
+                            <el-tag type="info" size="mini">已注销</el-tag>
+                          </span>
+                        </el-option>
+                      </el-select>
+                    </div>
+                    <div class="m-l-20">
+                      <el-button type="text" class="right-btn-32" @click="handleConfirm">确认</el-button>
+                    </div>
+                  </div>
+                  <div class="desc">{{ opendata.body }}</div>
+                   <div class="imgs" v-for="item in opendata.body_image" :key="item">
+                    <img :src="item" class="img" alt="">
+                  </div>
+                </div>
+              </template>
+            </el-descriptions>
+          </div>
+        </div>
+      </template>
+    </Dialog>
+
   </div>
 </template>
 
 <script>
 import "./index.less";
-import { Title } from "@/components";
+import { Title, Dialog } from "@/components";
 import { mapState } from "vuex";
 export default {
   data: () => ({
@@ -121,17 +196,28 @@ export default {
       keyword: "",
       time: "",
     },
+    visible: false,
+    opendata: {},
+    copyids: [],
+    mpwxaccountList: [],
     // 分页
     page: 1,
     accountList: []
   }),
   components: {
     Title,
+    Dialog
   },
   mounted() {
     this.handleGetAccountlist();
+    this.handleGetWxAccount();
   },
   methods: {
+    handleGetWxAccount() {
+      this.$API.getWxAccount().then((res) => {
+        this.mpwxaccountList = res.data.sort((a, b) => b.sort - a.sort) || [];
+      });
+    },
     // 获取热门文章
     handleGetHotlist() {
       const { keyword, time } = this.search;
@@ -205,7 +291,7 @@ export default {
             item.black = e;
             item.focus = e === '1' ? '0' : '1'
             this.$message({
-              message: e === '1' ? "已拉黑" : "已关注",
+              message: e === '1' ? `已拉黑${user.nick_name || ''}` : `已关注${user.nick_name || ''}`,
               type: "success",
             });
           }
@@ -222,6 +308,24 @@ export default {
       this.remove = 0;
       this.handleGetHotlist();
     },
+    // 查看文章
+    handleOpen(row) {
+      this.visible = true;
+      this.opendata = row;
+    },
+    // 复制
+    handleCopy(text) {
+      this.$copyText(text).then(() => {
+        this.$message({
+          message: "复制成功",
+          type: "success",
+        });
+      })
+    },
+    //确认洗稿
+    handleConfirm() {
+
+    }
   },
   computed: {
     ...mapState("global", ["globalInfo", "userInfo"]),
