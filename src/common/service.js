@@ -61,7 +61,7 @@ class HttpRequest {
                         reject(result)
                     } else {
                         if (result.status === 200 || result.code === 0) {
-                             resolve(result)
+                            resolve(result)
                         } else {
                             Message.error(result.message || '请求出错')
                             reject(result)
@@ -69,7 +69,7 @@ class HttpRequest {
                     }
                 })
                 .catch(error => {
-                    Message.error(error.message || '请求出错')
+                    if (requestUrl !== '/api/xh/addArticle') Message.error(error.message || '请求出错')
                     reject(error)
                 })
                 .finally(response => {

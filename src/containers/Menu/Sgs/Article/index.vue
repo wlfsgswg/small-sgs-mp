@@ -1,6 +1,6 @@
 <template>
-  <div class="xcx-sgs-sgshot">
-    <Title title="三国杀热榜"></Title>
+  <div class="xcx-sgs-sgsarticle">
+    <Title title="热榜文章"></Title>
     <!-- 条件搜索 -->
     <div class="search p-t-10 p-b-10">
       <el-row>
@@ -49,7 +49,7 @@
     </div>
     <!-- 内容展示 -->
     <div class="list">
-      <div class="list-item" v-for="(item, i) in list" :key="i">
+      <div class="list-item" v-for="item in list" :key="item.id">
         <div class="list-item-top">
           <div class="top-img">
             <img :src="item.user.avatar" alt="" class="img">
@@ -60,6 +60,13 @@
                 <div class="name"> {{ item.user && item.user.nick_name }} </div>
                 <div class="lv">Lv.{{ item.user.grade }}</div>
               </div>
+              <div class="op">
+                <span v-if="item.focus === '0'" class="m-r-10 span" @click="handleOp('0', item)">关注</span>
+                <span v-if="item.focus === '1'" class="m-r-10 span-not">已关注</span>
+                <span v-if="item.black === '0'" class="span" @click="handleOp('1', item)">拉黑</span>
+                <span v-if="item.black === '1'" class="m-r-10 span-not">已拉黑</span>
+              </div>
+
             </div>
             <div class="list-item-time">
               <span class="time">
@@ -126,8 +133,40 @@
                       </div>
                     </div>
                   </div>
+                  <div class="clearfix wx-account-op">
+                    <div class="m-r-20">
+                      <el-button type="text" class="right-btn-32" @click="handleCopy(opendata.title)">复制标题</el-button>
+                    </div>
+                    <div class="m-r-20">
+                      <el-button type="text" class="right-btn-32" @click="handleCopy(opendata.body)">复制内容</el-button>
+                    </div>
+                    <div class="select">
+                      <el-select multiple size="small" prefix="洗稿账号" v-model="copyids" :style="{ width: '100%' }"
+                        placeholder="请选择洗稿账号">
+                        <el-option
+                          v-for="item in mpwxaccountList.filter(it => it.isself !== '0' && it.iscancel !== '1')"
+                          :value="item.id" :label="item.name" :key="item.id">
+                          <span> {{ item.name }}</span>
+                          <span class=" p-l-5">
+                            <span v-if="item.isself === '1'">
+                              <el-tag size="mini">自</el-tag>
+                            </span>
+                            <span v-else>
+                              <el-tag type="info" size="mini">网</el-tag>
+                            </span>
+                          </span>
+                          <span v-if="item.iscancel === '1'" class="p-l-5">
+                            <el-tag type="info" size="mini">已注销</el-tag>
+                          </span>
+                        </el-option>
+                      </el-select>
+                    </div>
+                    <div class="m-l-20">
+                      <el-button type="text" class="right-btn-32" @click="handleConfirm">确认</el-button>
+                    </div>
+                  </div>
                   <div class="desc">{{ opendata.body }}</div>
-                  <div class="imgs" v-for="item in opendata.body_image" :key="item">
+                   <div class="imgs" v-for="item in opendata.body_image" :key="item">
                     <img :src="item" class="img" alt="">
                   </div>
                 </div>
@@ -147,6 +186,7 @@ import { Title, Dialog } from "@/components";
 import { mapState } from "vuex";
 export default {
   data: () => ({
+    dialogTitle: "新增问题",
     loading: false,
     list: [],
     total: 0,
@@ -158,23 +198,26 @@ export default {
     },
     visible: false,
     opendata: {},
-    // 黑名单
-    isblacklistIds: [],
+    copyids: [],
+    mpwxaccountList: [],
     // 分页
     page: 1,
+    accountList: []
   }),
   components: {
     Title,
     Dialog
   },
   mounted() {
-    if (this.$route.query && this.$route.query.time) {
-      this.search.time = this.$route.query.time
-    }
-    // 获取账号
     this.handleGetAccountlist();
+    this.handleGetWxAccount();
   },
   methods: {
+    handleGetWxAccount() {
+      this.$API.getWxAccount().then((res) => {
+        this.mpwxaccountList = res.data.sort((a, b) => b.sort - a.sort) || [];
+      });
+    },
     // 获取热门文章
     handleGetHotlist() {
       const { keyword, time } = this.search;
@@ -196,20 +239,25 @@ export default {
           const orginData = res?.data || []
           this.total += orginData.length
           // 处理，留下阅读高的数据
-          const readNumMaxData = orginData.filter(it => {
-            //1， 要求阅读数大于5000，2，发表用户不在黑名单
-            return (Number(it.view_count - 0) > 4999) && !this.isblacklistIds.includes(it.user && it.user.id)
+          const readNumMaxData = orginData.filter(it => (Number(it.view_count - 0) > 0))
+          // 同时添加状态
+          this.list = [...this.list, ...readNumMaxData].map(it => {
+            const currentItem = this.accountList.filter(item => item.id === (it.user && it.user.id))
+            console.log(currentItem, 'currentItem')
+            if (currentItem.length) {
+              it.black = currentItem[0].isblacklist === '1' ? '1' : '0'
+              it.focus = currentItem[0].isblacklist === '1' ? '0' : '1'
+
+            } else {
+              it.black = "0"
+              it.focus = "0"
+            }
+            return it
           })
-          // readNumMaxData作为高质量文章，直接塞进数据库
-          this.handleInsertTable(readNumMaxData)
-          // list 去重
-          this.list = Array.from(new Map([...this.list, ...readNumMaxData].map(item => [item.id, item])).values());
           this.remove = this.total - this.list.length
           if (this.page < time) {
             this.page++
-            setTimeout(() => {
-              this.handleGetHotlist()
-            }, 1000);
+            this.handleGetHotlist()
           } else {
             this.loading = false;
           }
@@ -222,14 +270,31 @@ export default {
     handleGetAccountlist() {
       this.$API.getXhAccount()
         .then((res) => {
-          const list = res.data || [];
-          const isblacklistIds = []
-          for (let i = 0; i < list.length; i++) {
-            if (list[i].isblacklist === '1') isblacklistIds.push(list[i].id)
-          }
-          this.isblacklistIds = isblacklistIds
+          this.accountList = res.data || [];
           // 请求文章
           this.handleGetHotlist()
+        })
+    },
+    // 改变账号状态
+    handleOp(e, item) {
+      const { user } = item
+      this.$API.addAccount({
+        isblacklist: e,
+        id: user.id,
+        name: user.nick_name,
+        avatar: user.avatar,
+        province: user.province,
+        official: user.official,
+      })
+        .then((res) => {
+          if (res.status === 200) {
+            item.black = e;
+            item.focus = e === '1' ? '0' : '1'
+            this.$message({
+              message: e === '1' ? `已拉黑${user.nick_name || ''}` : `已关注${user.nick_name || ''}`,
+              type: "success",
+            });
+          }
         })
     },
     // 查询
@@ -248,33 +313,18 @@ export default {
       this.visible = true;
       this.opendata = row;
     },
-    // 入库
-    handleInsertTable(readNumMaxData) {
-      if (!readNumMaxData.length) return
-      for (let index = 0; index < readNumMaxData.length; index++) {
-        // 1秒请求1次
-        setTimeout(() => {
-          this.handleRequest(readNumMaxData[index])
-        }, 1000 * index, index);
-      }
+    // 复制
+    handleCopy(text) {
+      this.$copyText(text).then(() => {
+        this.$message({
+          message: "复制成功",
+          type: "success",
+        });
+      })
     },
-    handleRequest(row) {
-      const data = {
-        id: row.id,
-        title: row.title,
-        body: row.body || '',
-        time: row.created_at,
-        userid: row.user && row.user.id,
-        username: row.user && row.user.nick_name,
-        user: JSON.stringify(row.user),
-        readnum: row.view_count + "",
-        likenum: row.like_count + "",
-        replynum: row.reply_count + "",
-        body_image: row.body_image ? JSON.stringify(row.body_image) : '',
-        iscopy: '0'
-      }
-      this.$API.addArticle(data)
-        .then(() => { })
+    //确认洗稿
+    handleConfirm() {
+
     }
   },
   computed: {

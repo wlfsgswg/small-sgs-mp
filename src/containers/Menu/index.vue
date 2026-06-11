@@ -9,7 +9,6 @@
                 {{ this.global.phone}}<i class="el-icon-caret-bottom el-icon--right c999"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <!-- <div class="header-dropdown-item">关于</div> -->
                 <div class="header-dropdown-item" @click="loginOut">退出</div>
               </el-dropdown-menu>
             </el-dropdown>

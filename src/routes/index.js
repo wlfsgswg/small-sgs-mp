@@ -11,6 +11,12 @@ const routes = [
                 component: () =>
                     import("@/containers/Menu/Sgs/Hot/index.vue"),
             },
+            {
+                path: "/article",
+                component: () =>
+                    import("@/containers/Menu/Sgs/Article/index.vue"),
+            },
+
 
         ]
     },
