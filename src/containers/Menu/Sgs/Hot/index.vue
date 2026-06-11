@@ -202,8 +202,10 @@ export default {
           this.total += orginData.length
           // 处理，留下阅读高的数据
           const readNumMaxData = orginData.filter(it => {
-            //1， 要求阅读数大于5000，2，发表用户不在黑名单
-            return (Number(it.view_count - 0) > 4999) && !this.isblacklistIds.includes(it.user && it.user.id)
+            //1， 要求阅读数大于5000，2，发表用户不在黑名单，3，文章有body
+            return (Number(it.view_count - 0) > 4999)
+              && !this.isblacklistIds.includes(it.user && it.user.id)
+              && Object.getOwnPropertyDescriptor(it, 'body')
           })
           // readNumMaxData作为高质量文章，直接塞进数据库
           this.handleInsertTable(readNumMaxData)
