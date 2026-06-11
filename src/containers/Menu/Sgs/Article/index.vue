@@ -277,8 +277,12 @@ export default {
               const length = this.list.length;
               this.list = this.list.filter(it => it.user.id !== user.id)
               this.total = this.total - (length - this.list.length)
+              //请求ajax删除
+              this.$API.deleteData({
+                id: user.id,
+                keyname: 'userid'
+              }).then(() => { })
             }
-            //请求ajax
           }
         })
     },

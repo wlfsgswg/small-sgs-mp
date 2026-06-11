@@ -60,6 +60,12 @@ const requestAddressList = [
         url: '/api/xh/data',
         type: 'post',
     },
+    {
+        describe: '删除咸话文章',
+        method: 'deleteData',
+        url: '/api/xh/deleteData',
+        type: 'post',
+    },
 ]
 
 const API = {}
