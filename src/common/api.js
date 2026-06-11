@@ -66,6 +66,12 @@ const requestAddressList = [
         url: '/api/xh/deleteData',
         type: 'post',
     },
+    {
+        describe: '洗稿咸话文章',
+        method: 'spinArticle',
+        url: '/api/xh/spinArticle',
+        type: 'post',
+    },
 ]
 
 const API = {}

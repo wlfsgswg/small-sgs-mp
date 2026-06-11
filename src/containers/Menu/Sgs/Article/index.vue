@@ -50,7 +50,10 @@
           <div class="top-flex">
             <div class="name-lv-op">
               <div class="name-lv">
-                <div class="name"> {{ item.user && item.user.nick_name }} </div>
+                <div class="name">{{
+                  item.user && item.user.nick_name.length > 7 ? `${item.user && item.user.nick_name.slice(0, 7)}...`
+                    : item.user && item.user.nick_name
+                }} </div>
                 <div class="lv">Lv.{{ item.user.grade }}</div>
               </div>
               <div class="op">
@@ -109,7 +112,9 @@
                   <div class=" base-data">
                     <div class="account-time">
                       <div class="account m-r-20">
-                        {{ opendata.user && opendata.user.nick_name }}
+                        {{ opendata.user && opendata.user.nick_name.length > 7 ?
+                          `${opendata.user && opendata.user.nick_name.slice(0, 7)}...`
+                          : opendata.user && opendata.user.nick_name }}
                       </div>
                     </div>
                     <div class="icons">
@@ -132,8 +137,8 @@
                       <el-button type="text" class="right-btn-32" @click="handleCopy(opendata.body)">复制内容</el-button>
                     </div>
                     <div class="select">
-                      <el-select multiple size="small" prefix="洗稿账号" v-model="copyids" :style="{ width: '100%' }"
-                        placeholder="请选择洗稿账号">
+                      <el-select multiple size="small" prefix="洗稿账号" v-model="opendata.copyids"
+                        :style="{ width: '100%' }" placeholder="请选择洗稿账号">
                         <el-option
                           v-for="item in mpwxaccountList.filter(it => it.isself !== '0' && it.iscancel !== '1')"
                           :value="item.id" :label="item.name" :key="item.id">
@@ -153,7 +158,7 @@
                       </el-select>
                     </div>
                     <div class="m-l-20">
-                      <el-button type="text" class="right-btn-32" @click="handleConfirm">确认</el-button>
+                      <el-button type="text" class="right-btn-32" @click="handleConfirm(opendata)">确认</el-button>
                     </div>
                   </div>
                   <div class="desc">{{ opendata.body }}</div>
@@ -188,7 +193,6 @@ export default {
     },
     visible: false,
     opendata: {},
-    copyids: [],
     mpwxaccountList: [],
     accountList: []
   }),
@@ -220,6 +224,7 @@ export default {
           res.data.map(it => {
             it.user = JSON.parse(it.user);
             it.body_image = it.body_image ? JSON.parse(it.body_image) : '';
+            it.copyids = it.copyids ? JSON.parse(it.copyids) : [];
             // 拉黑或关注
             const currentItem = this.accountList.filter(item => item.id === (it.user && it.user.id))
             if (currentItem.length) {
@@ -312,6 +317,22 @@ export default {
     },
     //确认洗稿
     handleConfirm() {
+      let { copyids, id } = this.opendata
+      let iscopy = copyids.length ? "1" : "0"
+      // 洗稿
+      this.$API.spinArticle({
+        id, iscopy,
+        copyids: JSON.stringify(copyids)
+      })
+        .then((res) => {
+          if (res.status === 200) {
+            this.$message({
+              message: '修改成功',
+              type: "success",
+            });
+            this.visible = false
+          }
+        })
 
     }
   },
