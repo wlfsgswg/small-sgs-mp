@@ -267,9 +267,9 @@ export default {
         userid: row.user && row.user.id,
         username: row.user && row.user.nick_name,
         user: JSON.stringify(row.user),
-        readnum: row.view_count + "",
-        likenum: row.like_count + "",
-        replynum: row.reply_count + "",
+        readnum: row.view_count - 0,
+        likenum: row.like_count - 0,
+        replynum: row.reply_count - 0,
         body_image: row.body_image ? JSON.stringify(row.body_image) : '',
         iscopy: '0'
       }

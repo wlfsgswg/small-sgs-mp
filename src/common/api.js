@@ -54,6 +54,11 @@ const requestAddressList = [
         method: 'addArticle',
         url: '/api/xh/addArticle',
         type: 'post',
+    }, {
+        describe: '获取咸话文章',
+        method: 'getXhData',
+        url: '/api/xh/data',
+        type: 'post',
     },
 ]
 
