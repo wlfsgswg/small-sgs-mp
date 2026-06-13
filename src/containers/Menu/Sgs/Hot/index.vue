@@ -58,7 +58,7 @@
             <div class="name-lv-op">
               <div class="name-lv">
                 <div class="name"> {{
-                  item.user && item.user.nick_name.length > 7 ? `${item.user && item.user.nick_name.slice(0, 7)}...`
+                  item.user && item.user.nick_name.length > 5 ? `${item.user && item.user.nick_name.slice(0, 5)}...`
                     : item.user && item.user.nick_name
                 }} </div>
                 <div class="lv">Lv.{{ item.user.grade }}</div>
@@ -113,8 +113,8 @@
                   <div class=" base-data">
                     <div class="account-time">
                       <div class="account m-r-20">
-                        {{ opendata.user && opendata.user.nick_name.length > 7 ?
-                          `${opendata.user && opendata.user.nick_name.slice(0, 7)}...`
+                        {{ opendata.user && opendata.user.nick_name.length > 5 ?
+                          `${opendata.user && opendata.user.nick_name.slice(0, 5)}...`
                           : opendata.user && opendata.user.nick_name }}
                       </div>
                       <div class="time">{{ opendata.time }}</div>
