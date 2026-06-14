@@ -74,7 +74,7 @@
         </div>
         <div class="list-item-content" @click="handleOpen(item)">
           <div class="title">{{ item.title }}</div>
-          <div class="text">{{ item.body || item.excerpt }}</div>
+          <div class="text">{{ item.body }}</div>
           <div class="preview-imgs">
             <div class="it" v-if="item.body_image && item.body_image.length">
               <img :src="item.body_image[0]" alt="" class="img">
@@ -131,7 +131,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="desc">{{ opendata.body || opendata.excerpt }}</div>
+                  <div class="desc">{{ opendata.body }}</div>
                   <div class="imgs" v-for="item in opendata.body_image" :key="item">
                     <img :src="item" class="img" alt="">
                   </div>
@@ -202,8 +202,8 @@ export default {
           this.total += orginData.length
           // 处理，留下阅读高的数据
           const readNumMaxData = orginData.filter(it => {
-            //1， 要求阅读数大于5000，2，发表用户不在黑名单
-            return (Number(it.view_count - 0) > 4999)
+            //1， 要求阅读数大于3000，2，发表用户不在黑名单
+            return (Number(it.view_count - 0) > 2999)
               && !this.isblacklistIds.includes(it.user && it.user.id)
           })
           // readNumMaxData作为高质量文章，直接塞进数据库
@@ -268,7 +268,7 @@ export default {
       const data = {
         id: row.id,
         title: row.title,
-        body: row.body || row.excerpt || '',
+        body: row.body || '',
         time: row.created_at,
         userid: row.user && row.user.id,
         username: row.user && row.user.nick_name,
