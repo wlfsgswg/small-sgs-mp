@@ -267,8 +267,8 @@ export default {
     handleRequest(row) {
       const data = {
         id: row.id,
-        title: row.title,
-        body: row.body || '',
+        title: row.title.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, '@icon'),
+        body: (row.body || '').replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, '@icon'),
         time: row.created_at,
         userid: row.user && row.user.id,
         username: row.user && row.user.nick_name,
